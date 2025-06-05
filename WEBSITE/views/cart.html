@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 1;
+            font-family: Poppins;
+        }
+        .container {
+            width: 900px;
+            margin: auto;
+            max-width: 90vw;
+            text-align: center;
+            padding-top: 10px;
+            transition: transform .5s;
+            margin-top: 120px;
+        }
+        svg {
+            width: 30px;
+        }
+       
+        /* header styles */
+
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ece9d8;
+  padding: 20px 80px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+  z-index: 999;
+  position:fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.header-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.header-list-nav ul {
+  display: flex;
+}
+.header-list-nav ul li {
+  list-style-type: none;
+  padding: 0 20px;
+  position: relative;
+}
+.header-list-nav ul a {
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  transition: 0.3s ease;
+}
+.header-list-nav ul a:hover,
+.header-list-nav ul a.active {
+  color: #847A30;
+  content: "";
+}
+.header-list-icon a {
+  color: #1a1a1a;
+  padding-left: 20px;
+  transition: 0.3s ease;
+}
+.header-list-icon a:hover,
+.header-list-nav ul a.active {
+  color: #847A30;
+}
+.header-list-nav ul li a:hover::after,
+.header-list-nav ul li a.active::after {
+  content: "";
+  width: 30%;
+  height: 2px;
+  background: #847A30;
+  position: absolute;
+  bottom: -4px;
+  left: 20px;
+}
+        .icon-cart {
+            position: relative;
+            cursor: pointer;
+        }
+        .icon-cart span {
+            position: absolute;
+            background-color: rgb(0, 0, 0);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            color: #fff;
+            top: 50%;
+            right: -20px;
+        }
+        .title {
+            font-size: xx-large;
+        }
+        .listProduct .item .image {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .listProduct .item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 0.3s ease;
+        }
+        .listProduct .item img:hover {
+            filter: brightness(0.8) contrast(1.2);
+            animation: flash 0.5s infinite alternate;
+        }
+        .listProduct {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .listProduct .item {
+            background-color: #EEEEE6;
+            padding: 20px;
+            border-radius: 20px;
+        }
+        .listProduct .item h2 {
+            font-weight: 500;
+            font-size: large;
+        }
+        .listProduct .item .price {
+            letter-spacing: 7px;
+            font-size: small;
+        }
+        .listProduct .item button {
+            background-color:#847A30;
+            color: #eee;
+            border: none;
+            padding: 5px 10px;
+            margin-top: 10px;
+            border-radius: 20px;
+        }
+        .checkout-form {
+            background-color: #b0a868;
+            color: #eee;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .checkout-form h2 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .checkout-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+        .checkout-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #847A30;
+            color: #eee;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .checkout-form button:hover {
+            background-color: #6c6132;
+        }
+        .cartTab {
+            width: 400px;
+            background-color:#b0a868;
+            color: #eee;
+            position: fixed;
+            top: 0;
+            right: -400px;
+            bottom: 0;
+            display: grid;
+            grid-template-rows: 70px 1fr 70px;
+            transition: .5s;
+            margin-top: 120px;
+        }
+        body.showCart .cartTab {
+            right: 0;
+        }
+        body.showCart .container {
+            transform: translateX(-250px);
+        }
+        .cartTab h1 {
+            padding: 20px;
+            margin: 0;
+            font-weight: 300;
+        }
+      
+        .cartTab button {
+            background-color: #ffffff;
+            border: none;
+            font-family: Poppins;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 15px;
+            font-size: 1.25rem;
+        }
+       
+        .listCart .item img {
+            width: 100%;
+        }
+        .listCart .item {
+            display: grid;
+            grid-template-columns: 70px 150px 50px 1fr;
+            gap: 10px;
+            text-align: center;
+            align-items: center;
+        }
+        .listCart .quantity span {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background-color: #eee;
+            border-radius: 50%;
+            color: #555;
+            cursor: pointer;
+        }
+        .listCart .quantity span:nth-child(2) {
+            background-color: transparent;
+            color: #eee;
+            cursor: auto;
+        }
+        .listCart .item:nth-child(even) {
+            background-color:#847A30;
+        }
+        .listCart {
+            overflow: auto;
+        }
+        .listCart::-webkit-scrollbar {
+            width: 0;
+        }
+        .total {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        @keyframes flash {
+            from {
+                filter: brightness(0.8) contrast(1.2);
+            }
+            to {
+                filter: brightness(1) contrast(1);
+            }
+        }
+        @media only screen and (max-width: 992px) {
+            .listProduct {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media only screen and (max-width: 768px) {
+            .listProduct {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+     
+    </style>
+</head>
+<body>
+    <!--header section-->
+ <header>
+    <div id="header">
+      <div class="header-logo">
+        <a href="#hero"><img src="images/logo.png"  alt="" /></a>
+      </div>
+      <div class="header-list">
+        <nav class="header-list-nav">
+          <ul>
+            <li><a href="/index">Home</a></li>
+            <li><a href="index.html">Shop</a></li>
+            <li><a href="index.html">New Arrivals</a></li>
+            <li><a href="#footer">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="header-list-icon">
+          <a href="/cart"><i class="fa fa-bag-shopping"></i></a>
+          <a href="/login"><i class="fa fa-user"></i></a>
+      </div>
+    </div>
+  </header>
+
+    <div class="container">
+        
+            <div class="title">PRODUCT LIST</div>
+            <div class="icon-cart">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 15a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0h8m-8 0-1-4m9 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-9-4h10l2-7H3m2 7L3 4m0 0-.792-3H1"/>
+                </svg>
+                <span>0</span>
+            </div>
+        
+        <div class="listProduct">
+            <!-- Product list will be populated here -->
+        </div>
+    </div>
+    <div class="cartTab">
+        <h1>Shopping Cart</h1>
+        <div class="listCart">
+           <!-- Shopping cart content will be populated here -->
+        </div>
+        <div class="total">Total: <span id="total">0€</span></div>
+        <div class="checkout-form">
+            <h2>Checkout</h2>
+            <form action="/cart" method="POST">
+                <!-- Removed Id_C since it's auto-generated -->
+                <input name="id_u" type="number" placeholder="user_id" id="user_input" required>
+                <input name="id_p" type="number" placeholder="product_id" id="product_input" required >
+                <input name="total"type="number" id="total_input" placeholder="Total" required readonly>
+            
+                <input name="quantity" type="number" placeholder="Quantité" id="quantity_input" required readonly>
+    
+                <button type="submit">Pay Now</button>
+            </form>
+        </div>
+        
+    </div>
+    <script>
+        let listProductHTML = document.querySelector('.listProduct');
+        let listCartHTML = document.querySelector('.listCart');
+        let iconCart = document.querySelector('.icon-cart');
+        let iconCartSpan = document.querySelector('.icon-cart span');
+        let body = document.querySelector('body');
+        let UserInput = document.getElementById('user_input');
+        let ProductInput = document.getElementById('product_input');
+        let totalPriceElement = document.getElementById('total');
+        let totalInput = document.getElementById('total_input');
+        let quantityInput = document.getElementById('quantity_input');
+        let products = [
+            { id: 1, name: 'Elegant Button-Down Shirt', price: 19.99, image: '/images/products/f9.jpg' },
+            { id: 2, name: 'Black Off Shoulder Dress', price: 29.99, image: 'images/products/f10.jpg' },
+            { id: 3, name: 'Dark Gray Oversized T-Shirt', price: 39.99, image: 'images/products/f11.jpg' },
+            { id: 4, name: 'Top Asymétrique', price: 50.00, image: 'images/products/f12.jpg' },
+            { id: 5, name: 'Relaxed Black T-shirt & Shorts Set', price: 21.76, image: 'images/products/f13.jpg' },
+            { id: 6, name: 'Chic Brown Suit with Blazer & High-Waisted Pants', price: 49.99, image: 'images/products/f14.jpg' },
+            { id: 7, name: 'Stylish Denim Jacket & Layered Shirt & Sleek Black Trousers', price: 70.30, image: 'images/products/f15.jpg' },
+            { id: 8, name: 'White Lace Top & Brown High-Waisted Pants', price: 49.99, image: 'images/products/f16.jpg' },
+            { id: 9, name: 'Crisp White Striped Button-Up Shirt & Tailored Black Pants', price: 42.00, image: 'images/products/f17.jpg' },
+            { id: 10, name: 'Trendy Green Knit Vest over White Shirt & Jeans', price: 30.99, image: 'images/products/f18.jpg' },
+            { id: 11, name: 'Beige Oversized T-shirt & Matching Pants', price: 80.99, image: 'images/products/f19.jpg' },
+            { id: 13, name: 'Denim Shirt Jacket with White Tank Top & Jeans', price: 45.99, image: 'images/products/f20.jpg' },
+            { id: 14, name: 'Gray Sweatshirt with White Undershirt & Beige Pants', price: 66.99, image: 'images/products/f21.jpg' },
+            { id: 15, name: 'Sophisticated Black Dress With Contrasting White Collar and Cuffs', price: 70.99, image: 'images/products/f22.jpg' },
+            { id: 16, name: 'Gray Cardigan over White T-shirt & Gray Pants', price: 49.99, image: 'images/products/f23.jpg' },
+            { id: 17, name: 'Beige Knit Sleeveless Turtleneck & High-Waisted Black Pants and a Statement Brown Belt', price: 49.99, image: 'images/products/f24.jpg' },
+            { id: 18, name: 'Stylish Light Blue Short-Sleeve Shirt With a Classic Collar', price: 80.99, image: 'images/products/f25.jpg' },
+            { id: 19, name: 'Black Sleeveless Blazer Dress Adorned With Gold Buttons', price: 59.99, image: 'images/products/f26.jpg' },
+            { id: 20, name: 'White Oversized T-Shirt', price: 49.99, image: 'images/products/f27.jpg' },
+            { id: 21, name: 'Aesthetic Brown draped top', price: 59.99, image: 'images/products/f28.jpg' },
+            { id: 22, name: 'Bomber Jacket With Brown Accents', price: 79.99, image: 'images/products/f29.jpg' },
+            { id: 23, name: 'Cropped Tank Top & cozy sweatpants', price: 39.99, image: 'images/products/f30.jpg' },
+            { id: 24, name: 'Charm Black Shirt & Black Trousers', price: 79.99, image: 'images/products/f31.jpg' },
+            { id: 25, name: 'Green Gown With Structured Shoulders And Gathered Waist Detailing', price: 89.99, image: 'images/products/f32.jpg' }
+        ];
+        let cart = [];
+
+        iconCart.addEventListener('click', () => {
+            body.classList.toggle('showCart');
+        });
+       
+
+        const addDataToHTML = () => {
+            if (products.length > 0) {
+                listProductHTML.innerHTML = '';
+                products.forEach(product => {
+                    let newProduct = document.createElement('div');
+                    newProduct.classList.add('item');
+                    newProduct.innerHTML = `
+                        <div class="image">
+                            <img src="${product.image}" />
+                        </div>
+                        <h2>${product.name}</h2>
+                        <div class="price">${product.price.toFixed(2)}€</div>
+                        <button onclick="addToCart(${product.id})">Add to cart</button>
+                    `;
+
+                    listProductHTML.appendChild(newProduct);
+                });
+            }
+        }
+
+        const fetchProduct = async () => {
+            addDataToHTML();
+        }
+
+        fetchProduct();
+
+        const addToCart = (id) => {
+            let product = products.find(product => product.id === id);
+            if (product) {
+                let existingProduct = cart.find(item => item.id === product.id);
+                if (existingProduct) {
+                    existingProduct.quantity++;
+                } else {
+                    let newCart = {
+                        ...product,
+                        quantity: 1,
+                    };
+                    cart.push(newCart);
+                }
+                addCartToHTML();
+                updateTotal();
+            }
+        }
+
+        const addCartToHTML = () => {
+            if (cart.length > 0) {
+                listCartHTML.innerHTML = '';
+                cart.forEach(product => {
+                    let newCartItem = document.createElement('div');
+                    newCartItem.classList.add('item');
+                    newCartItem.innerHTML = `
+                        <img src="${product.image}" />
+                        <h2>${product.name}</h2>
+                        <div class="quantity">
+                            <span onclick="decreaseQuantity(${product.id})">-</span>
+                            <span>${product.quantity}</span>
+                            <span onclick="increaseQuantity(${product.id})">+</span>
+                        </div>
+                        <div class="price">${(product.price * product.quantity).toFixed(2)}€</div>
+                    `;
+                    listCartHTML.appendChild(newCartItem);
+                });
+                iconCartSpan.innerHTML = cart.length;
+            } else {
+                iconCartSpan.innerHTML = 0;
+                listCartHTML.innerHTML = '';
+            }
+        }
+
+        const updateTotal = () => {
+            let total = cart.reduce((sum, product) => sum + (product.price * product.quantity), 0);
+            let totalQuantity = cart.reduce((sum, product) => sum + product.quantity, 0);
+            totalPriceElement.innerHTML = `${total.toFixed(2)}€`;
+            totalInput.value = total.toFixed(2);
+            quantityInput.value = totalQuantity;
+        }
+
+        const increaseQuantity = (id) => {
+            let product = cart.find(item => item.id === id);
+            if (product) {
+                product.quantity++;
+                addCartToHTML();
+                updateTotal();
+            }
+        }
+
+        const decreaseQuantity = (id) => {
+            let product = cart.find(item => item.id === id);
+            if (product && product.quantity > 1) {
+                product.quantity--;
+            } else {
+                cart = cart.filter(item => item.id !== id);
+            }
+            addCartToHTML();
+            updateTotal();
+        }
+    </script>
+    
+</body>
+</html>
